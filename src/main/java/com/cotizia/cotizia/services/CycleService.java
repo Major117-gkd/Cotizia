@@ -74,4 +74,20 @@ public class CycleService {
         System.out.println("CycleService: Removing participant ID: " + participantId);
         participantDAO.removeParticipant(participantId);
     }
+
+    public void checkAndUpdateLatePayments() {
+        System.out.println("CycleService: Checking for late payments...");
+        String sql = "UPDATE echeance SET statut = 'RETARD' WHERE statut = 'EN_ATTENTE' AND date_prevue < ?";
+        try (java.sql.Connection conn = com.cotizia.cotizia.utils.DBConnection.getConnection();
+                java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+            int updated = pstmt.executeUpdate();
+            if (updated > 0) {
+                System.out.println("CycleService: " + updated + " echeances marked as RETARD.");
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("CycleService: Error checking late payments: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

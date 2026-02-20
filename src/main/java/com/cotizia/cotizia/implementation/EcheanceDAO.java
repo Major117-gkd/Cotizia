@@ -152,8 +152,14 @@ public class EcheanceDAO implements IEcheanceDAO {
         return e;
     }
 
-    public double sumTotalPaid() {
-        String sql = "SELECT SUM(montant_paye) FROM echeance WHERE statut = 'PAYE'";
+    public double sumTotalPaid(Integer collecteurId) {
+        String sql = "SELECT SUM(e.montant_paye) FROM echeance e " +
+                "JOIN participant p ON e.participant_id = p.id " +
+                "JOIN cycle c ON p.cycle_id = c.id " +
+                "WHERE e.statut = 'PAYE'";
+        if (collecteurId != null)
+            sql += " AND c.collecteur_id = " + collecteurId;
+
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -167,17 +173,72 @@ public class EcheanceDAO implements IEcheanceDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (rs != null)
-                    rs.close();
-            } catch (SQLException e) {
-            }
-            try {
-                if (stmt != null)
-                    stmt.close();
-            } catch (SQLException e) {
-            }
+            closeResources(stmt, rs);
         }
         return 0.0;
+    }
+
+    public double sumTotalExpected(Integer collecteurId) {
+        String sql = "SELECT SUM(c.montant_cotisation) FROM echeance e " +
+                "JOIN participant p ON e.participant_id = p.id " +
+                "JOIN cycle c ON p.cycle_id = c.id";
+        if (collecteurId != null)
+            sql += " WHERE c.collecteur_id = " + collecteurId;
+
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DBConnection.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources(stmt, rs);
+        }
+        return 0.0;
+    }
+
+    public java.util.Map<String, Double> getMonthlyCollections(Integer collecteurId) {
+        java.util.Map<String, Double> stats = new java.util.LinkedHashMap<>();
+        String sql = "SELECT DATE_FORMAT(e.date_paiement, '%Y-%m') as mois, SUM(e.montant_paye) as total " +
+                "FROM echeance e " +
+                "JOIN participant p ON e.participant_id = p.id " +
+                "JOIN cycle c ON p.cycle_id = c.id " +
+                "WHERE e.statut = 'PAYE' AND e.date_paiement IS NOT NULL";
+        if (collecteurId != null)
+            sql += " AND c.collecteur_id = " + collecteurId;
+        sql += " GROUP BY mois ORDER BY mois ASC LIMIT 6";
+
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DBConnection.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                stats.put(rs.getString("mois"), rs.getDouble("total"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources(stmt, rs);
+        }
+        return stats;
+    }
+
+    private void closeResources(Statement stmt, ResultSet rs) {
+        try {
+            if (rs != null)
+                rs.close();
+            if (stmt != null)
+                stmt.close();
+        } catch (SQLException e) {
+        }
     }
 }

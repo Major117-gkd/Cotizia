@@ -6,7 +6,6 @@ import com.cotizia.cotizia.implementation.EcheanceDAO;
 import com.cotizia.cotizia.implementation.UtilisateurDAO;
 import com.cotizia.cotizia.services.AuthenticationService;
 import java.io.IOException;
-import java.util.List;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +24,10 @@ public class DashboardController {
     private Label totalUsersLabel;
     @FXML
     private Label totalCollectedLabel;
+    @FXML
+    private javafx.scene.chart.PieChart paymentPieChart;
+    @FXML
+    private javafx.scene.chart.BarChart<String, Number> collectionsBarChart;
 
     private AuthenticationService authService = new AuthenticationService();
     private CycleDAO cycleDAO = new CycleDAO();
@@ -99,6 +102,19 @@ public class DashboardController {
             mouchardBtn.setManaged(false);
         }
         // Admin sees all
+
+        // Point 2: Manage Chart Visibility
+        if ("ADHERANT".equalsIgnoreCase(role)) {
+            // Hide charts for adherents as they prefer the simplified "My Cycles" view
+            if (paymentPieChart != null) {
+                ((javafx.scene.layout.VBox) paymentPieChart.getParent()).setVisible(false);
+                ((javafx.scene.layout.VBox) paymentPieChart.getParent()).setManaged(false);
+            }
+            if (collectionsBarChart != null) {
+                ((javafx.scene.layout.VBox) collectionsBarChart.getParent()).setVisible(false);
+                ((javafx.scene.layout.VBox) collectionsBarChart.getParent()).setManaged(false);
+            }
+        }
     }
 
     @FXML
@@ -145,6 +161,11 @@ public class DashboardController {
     @FXML
     private void refreshStats() {
         System.out.println("Refreshing stats...");
+
+        // Point 4: Run automated late payment detection
+        com.cotizia.cotizia.services.CycleService cycleService = new com.cotizia.cotizia.services.CycleService();
+        cycleService.checkAndUpdateLatePayments();
+
         if (totalCyclesLabel != null) {
             try {
                 int cycles = cycleDAO.countAll();
@@ -155,9 +176,40 @@ public class DashboardController {
                 System.out.println("Users count: " + users);
                 totalUsersLabel.setText(String.valueOf(users));
 
-                double paid = echeanceDAO.sumTotalPaid();
-                System.out.println("Total paid: " + paid);
+                // RBAC: Determiner le filtre
+                com.cotizia.cotizia.models.Utilisateur user = AuthenticationService.getCurrentUser();
+                Integer filterId = "COLLECTEUR".equalsIgnoreCase(user.getRole()) ? user.getId() : null;
+
+                // Si Adhérent, on pourrait aussi filtrer par participant_id,
+                // mais pour l'instant on cache simplement les graphiques globaux.
+
+                double paid = echeanceDAO.sumTotalPaid(filterId);
+                System.out.println("Total paid (filtered=" + filterId + "): " + paid);
                 totalCollectedLabel.setText(String.format("%.2f FG", paid));
+
+                // Update Charts
+                if (paymentPieChart != null && paymentPieChart.isVisible()) {
+                    double totalExpected = echeanceDAO.sumTotalExpected(filterId);
+                    double remaining = Math.max(0, totalExpected - paid);
+
+                    javafx.collections.ObservableList<javafx.scene.chart.PieChart.Data> pieData = javafx.collections.FXCollections
+                            .observableArrayList(
+                                    new javafx.scene.chart.PieChart.Data("Payé", paid),
+                                    new javafx.scene.chart.PieChart.Data("En attente", remaining));
+                    paymentPieChart.setData(pieData);
+                }
+
+                if (collectionsBarChart != null && collectionsBarChart.isVisible()) {
+                    java.util.Map<String, Double> monthlyStats = echeanceDAO.getMonthlyCollections(filterId);
+                    javafx.scene.chart.XYChart.Series<String, Number> series = new javafx.scene.chart.XYChart.Series<>();
+                    series.setName("Collections Mensuelles");
+
+                    for (java.util.Map.Entry<String, Double> entry : monthlyStats.entrySet()) {
+                        series.getData().add(new javafx.scene.chart.XYChart.Data<>(entry.getKey(), entry.getValue()));
+                    }
+                    collectionsBarChart.getData().clear();
+                    collectionsBarChart.getData().add(series);
+                }
 
                 // Load recent activities
                 if (recentActivitiesBox != null) {

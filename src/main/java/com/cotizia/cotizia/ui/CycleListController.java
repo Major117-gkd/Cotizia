@@ -79,6 +79,29 @@ public class CycleListController {
     }
 
     @FXML
+    private void handleExportPDF() {
+        Cycle selected = cycleListView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+            fileChooser.setTitle("Exporter Rapport de Cycle");
+            fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+            fileChooser.setInitialFileName("rapport_cycle_" + selected.getNom() + ".pdf");
+
+            javafx.stage.Window window = cycleListView.getScene().getWindow();
+            java.io.File file = fileChooser.showSaveDialog(window);
+
+            if (file != null) {
+                try {
+                    new com.cotizia.cotizia.services.ReportService().generateCycleReport(selected, file);
+                    System.out.println("Rapport PDF généré avec succès.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @FXML
     private void handleBack() throws IOException {
         Cotizia.setRoot("dashboard");
     }

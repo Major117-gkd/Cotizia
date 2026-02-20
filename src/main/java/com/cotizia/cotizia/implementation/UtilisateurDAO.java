@@ -19,17 +19,39 @@ public class UtilisateurDAO implements IUtilisateurDAO {
         ResultSet rs = null;
         try {
             conn = DBConnection.getConnection();
+            String hashedInput = com.cotizia.cotizia.utils.SecurityUtils.hashPassword(password);
+
+            // 1. Essayer avec le mot de passe haché (standard)
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, email);
+            pstmt.setString(2, hashedInput);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                System.out.println("UtilisateurDAO: User found with hashed password.");
+                return mapResultSetToUtilisateur(rs);
+            }
+
+            // 2. Essayer avec le mot de passe en texte clair (Migration des anciens
+            // comptes)
+            if (rs != null)
+                rs.close();
+            if (pstmt != null)
+                pstmt.close();
+
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, email);
             pstmt.setString(2, password);
-
             rs = pstmt.executeQuery();
             if (rs.next()) {
-                System.out.println("UtilisateurDAO: User found in DB.");
-                return mapResultSetToUtilisateur(rs);
-            } else {
-                System.out.println("UtilisateurDAO: No user found with those credentials.");
+                System.out.println("UtilisateurDAO: User found with plain text password. Migrating to Hash...");
+                Utilisateur user = mapResultSetToUtilisateur(rs);
+                // Mettre à jour en base avec le mot de passe haché
+                user.setMotDePasse(password); // Sera haché dans la méthode update()
+                update(user);
+                return user;
             }
+
+            System.out.println("UtilisateurDAO: No user found with those credentials.");
         } catch (SQLException e) {
             System.err.println("UtilisateurDAO: Login SQLException: " + e.getMessage());
             e.printStackTrace();
@@ -44,7 +66,6 @@ public class UtilisateurDAO implements IUtilisateurDAO {
                     pstmt.close();
             } catch (SQLException e) {
             }
-            // Note: DBConnection handles closing if needed, but we follow standard pattern
         }
         return null;
     }
@@ -60,7 +81,7 @@ public class UtilisateurDAO implements IUtilisateurDAO {
             pstmt.setString(1, utilisateur.getNom());
             pstmt.setString(2, utilisateur.getPrenom());
             pstmt.setString(3, utilisateur.getEmail());
-            pstmt.setString(4, utilisateur.getMotDePasse());
+            pstmt.setString(4, com.cotizia.cotizia.utils.SecurityUtils.hashPassword(utilisateur.getMotDePasse()));
             pstmt.setString(5, utilisateur.getRole());
             pstmt.setString(6, utilisateur.getTelephone());
             pstmt.setString(7, utilisateur.getAdresse());
@@ -106,7 +127,7 @@ public class UtilisateurDAO implements IUtilisateurDAO {
             pstmt.setString(1, utilisateur.getNom());
             pstmt.setString(2, utilisateur.getPrenom());
             pstmt.setString(3, utilisateur.getEmail());
-            pstmt.setString(4, utilisateur.getMotDePasse());
+            pstmt.setString(4, com.cotizia.cotizia.utils.SecurityUtils.hashPassword(utilisateur.getMotDePasse()));
             pstmt.setString(5, utilisateur.getTelephone());
             pstmt.setString(6, utilisateur.getAdresse());
 

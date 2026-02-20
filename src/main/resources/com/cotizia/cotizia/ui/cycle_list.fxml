@@ -19,8 +19,9 @@
             <VBox spacing="15.0" styleClass="card" VBox.vgrow="ALWAYS">
                  <HBox spacing="15.0">
                     <Button onAction="#handleNewCycle" styleClass="button" text="+ Nouveau Cycle" />
-                    <Button onAction="#handleManageParticipants" styleClass="button-accent" text="Gérer Participants" />
-                </HBox>
+                     <Button onAction="#handleManageParticipants" styleClass="button-accent" text="Gérer Participants" />
+                     <Button onAction="#handleExportPDF" styleClass="button-outlined" text="Exporter Rapport PDF" />
+                 </HBox>
                 
                 <ListView fx:id="cycleListView" style="-fx-background-color: transparent; -fx-border-color: #eceff1;" VBox.vgrow="ALWAYS" />
             </VBox>

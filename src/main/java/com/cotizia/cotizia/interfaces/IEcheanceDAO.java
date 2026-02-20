@@ -6,6 +6,10 @@ import java.util.List;
 public interface IEcheanceDAO {
     void create(Echeance echeance);
 
+    double sumTotalPaid(Integer collecteurId);
+
+    double sumTotalExpected(Integer collecteurId);
+
     void update(Echeance echeance); // Pour payer
 
     List<Echeance> findByParticipant(int participantId);

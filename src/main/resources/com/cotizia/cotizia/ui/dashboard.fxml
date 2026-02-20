@@ -12,6 +12,10 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cotizia.cotizia.ui.DashboardController">
 
@@ -65,7 +69,28 @@
                  </VBox>
             </GridPane>
             
-            <VBox fx:id="recentActivitiesBox" styleClass="card" VBox.vgrow="ALWAYS">
+            <HBox spacing="30.0" VBox.vgrow="ALWAYS">
+                <children>
+                    <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                        <Label text="État des Recouvrements" styleClass="subtitle-label"/>
+                        <PieChart fx:id="paymentPieChart" />
+                    </VBox>
+                    <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                        <Label text="Données" styleClass="subtitle-label"/>
+                        <!-- On peut mettre un BarChart ici plus tard ou une autre info -->
+                        <BarChart fx:id="collectionsBarChart">
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" />
+                            </yAxis>
+                        </BarChart>
+                    </VBox>
+                </children>
+            </HBox>
+            
+            <VBox fx:id="recentActivitiesBox" styleClass="card">
                 <Label text="Activités Récentes" styleClass="subtitle-label" style="-fx-padding: 0 0 10 0;"/>
                 <Label text="Aucune activité récente." textFill="#90a4ae" />
             </VBox>

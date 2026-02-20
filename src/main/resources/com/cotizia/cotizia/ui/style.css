@@ -179,3 +179,20 @@
 .list-cell:empty {
     -fx-border-color: transparent;
 }
+
+.button-outlined {
+    -fx-background-color: white;
+    -fx-border-color: #00695c;
+    -fx-border-width: 1.5;
+    -fx-text-fill: #00695c;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.button-outlined:hover {
+    -fx-background-color: #e0f2f1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 105, 92, 0.1), 5, 0, 0, 2);
+}

@@ -62,5 +62,5 @@ CREATE TABLE IF NOT EXISTS mouchard (
 -- Insertion d'un compte administrateur par defaut
 -- Email: admin@cotizia.com | Password: admin
 INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, role) 
-VALUES ('System', 'Admin', 'admin@cotizia.com', 'admin', 'ADMIN')
+VALUES ('System', 'Admin', 'admin@cotizia.com', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'ADMIN')
 ON DUPLICATE KEY UPDATE id=id;
