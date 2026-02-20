@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cotizia.cotizia.ui.DashboardController">
+
+   <left>
+      <VBox prefHeight="600.0" prefWidth="220.0" spacing="0.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-padding: 30 0 30 0;">
+                <Label text="Cotizia" textFill="WHITE">
+                  <font>
+                     <Font name="Segoe UI Bold" size="28.0" />
+                  </font>
+               </Label>
+               <Label fx:id="currentUserLabel" text="Chargement..." styleClass="user-label" alignment="CENTER" textAlignment="CENTER" wrapText="true" />
+            </VBox>
+            
+            <Button fx:id="cyclesBtn" maxWidth="Infinity" mnemonicParsing="false" onAction="#showCycles" styleClass="button-secondary" text="GESTION CYCLES" />
+            <Button fx:id="usersBtn" maxWidth="Infinity" mnemonicParsing="false" onAction="#showUtilisateurs" styleClass="button-secondary" text="UTILISATEURS" />
+             <Button fx:id="mouchardBtn" maxWidth="Infinity" mnemonicParsing="false" onAction="#showMouchard" styleClass="button-secondary" text="MOUCHARD (LOGS)" />
+             
+             <Region VBox.vgrow="ALWAYS" />
+             
+             <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogout" styleClass="button-secondary" style="-fx-text-fill: #ffab91;" text="DÉCONNEXION" />
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <VBox fx:id="contentArea" alignment="TOP_LEFT" spacing="30.0" style="-fx-padding: 40;" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="20.0">
+                <children>
+                    <Label text="Tableau de Bord" styleClass="title-label" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button text="Actualiser" onAction="#refreshStats" styleClass="button-accent"/>
+                </children>
+            </HBox>
+            
+            <GridPane hgap="30.0" vgap="30.0">
+                 <VBox styleClass="card" GridPane.columnIndex="0">
+                     <Label text="Cycles Actifs" styleClass="subtitle-label"/>
+                     <Label fx:id="totalCyclesLabel" text="0" styleClass="stats-value" />
+                 </VBox>
+                 
+                 <VBox styleClass="card" GridPane.columnIndex="1">
+                     <Label text="Utilisateurs" styleClass="subtitle-label"/>
+                     <Label fx:id="totalUsersLabel" text="0" styleClass="stats-value" />
+                 </VBox>
+                 
+                 <VBox styleClass="card" GridPane.columnIndex="2" style="-fx-border-color: transparent transparent transparent #ffca28; -fx-border-width: 0 0 0 5;">
+                     <Label text="Total Collecté" styleClass="subtitle-label"/>
+                     <Label fx:id="totalCollectedLabel" text="0 FG" styleClass="stats-value" textFill="#ffca28"/>
+                 </VBox>
+            </GridPane>
+            
+            <VBox fx:id="recentActivitiesBox" styleClass="card" VBox.vgrow="ALWAYS">
+                <Label text="Activités Récentes" styleClass="subtitle-label" style="-fx-padding: 0 0 10 0;"/>
+                <Label text="Aucune activité récente." textFill="#90a4ae" />
+            </VBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
