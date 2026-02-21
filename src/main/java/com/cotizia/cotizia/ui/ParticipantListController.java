@@ -115,7 +115,7 @@ public class ParticipantListController {
                     }
                 });
 
-        adherentComboBox.setConverter(new javafx.util.StringConverter<Utilisateur>() {
+        adherentComboBox.setConverter(new StringConverter<Utilisateur>() {
             @Override
             public String toString(Utilisateur user) {
                 return (user == null) ? "" : user.getNom() + " " + user.getPrenom() + " (" + user.getEmail() + ")";
@@ -130,7 +130,7 @@ public class ParticipantListController {
 
     private void loadAdherents() {
         System.out.println("ParticipantListController: Loading available adherents...");
-        java.util.List adherents = utilisateurDAO.findByRole("ADHERANT");
+        List<Utilisateur> adherents = utilisateurDAO.findByRole("ADHERANT");
         System.out.println("ParticipantListController: Found " + adherents.size() + " adherents.");
         adherentComboBox.setItems(FXCollections.observableArrayList(adherents));
     }
@@ -146,7 +146,7 @@ public class ParticipantListController {
         // Use Platform.runLater to ensure UI thread safely updates and triggers redraw
         javafx.application.Platform.runLater(new Runnable() {
             public void run() {
-                java.util.List parts = cycleService.getParticipants(cycleId);
+                List<Participant> parts = cycleService.getParticipants(cycleId);
                 System.out.println("ParticipantListController: cycleService.getParticipants(" + cycleId + ") returned "
                         + (parts != null ? parts.size() : "null") + " items.");
 
@@ -180,10 +180,9 @@ public class ParticipantListController {
 
             try {
                 // Check if already in this cycle (Strict database check)
-                java.util.List existing = cycleService.getParticipants(currentCycle.getId());
+                List<Participant> existing = cycleService.getParticipants(currentCycle.getId());
                 if (existing != null) {
-                    for (Object obj : existing) {
-                        Participant part = (Participant) obj;
+                    for (Participant part : existing) {
                         if (part.getUtilisateur().getId() == selectedUser.getId()) {
                             statusLabel.setText("Cet adhérent est déjà participant.");
                             return;
@@ -194,7 +193,7 @@ public class ParticipantListController {
                 Participant p = new Participant();
                 p.setCycle(currentCycle);
                 p.setUtilisateur(selectedUser);
-                p.setDateInscription(java.time.LocalDate.now());
+                p.setDateInscription(LocalDate.now());
                 p.setPositionBeneficiaire((existing != null ? existing.size() : 0) + 1);
 
                 cycleService.ajouterParticipant(currentCycle, p);

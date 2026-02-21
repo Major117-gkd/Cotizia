@@ -131,8 +131,8 @@ public class CycleDAO implements ICycleDAO {
         return null;
     }
 
-    public java.util.List findAll() {
-        java.util.List cycles = new java.util.ArrayList();
+    public List<Cycle> findAll() {
+        List<Cycle> cycles = new ArrayList<>();
         String sql = "SELECT * FROM cycle";
         Connection conn = null;
         Statement stmt = null;
@@ -161,8 +161,8 @@ public class CycleDAO implements ICycleDAO {
         return cycles;
     }
 
-    public java.util.List findByCollecteur(int collecteurId) {
-        java.util.List cycles = new java.util.ArrayList();
+    public List<Cycle> findByCollecteur(int collecteurId) {
+        List<Cycle> cycles = new ArrayList<>();
         String sql = "SELECT * FROM cycle WHERE collecteur_id = ?";
         Connection conn = null;
         PreparedStatement pstmt = null;

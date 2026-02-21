@@ -201,8 +201,8 @@ public class UtilisateurDAO implements IUtilisateurDAO {
         return null;
     }
 
-    public java.util.List findAll() {
-        java.util.List utilisateurs = new java.util.ArrayList();
+    public List<Utilisateur> findAll() {
+        List<Utilisateur> utilisateurs = new ArrayList<>();
         String sql = "SELECT * FROM utilisateur";
         Connection conn = null;
         Statement stmt = null;
@@ -232,8 +232,8 @@ public class UtilisateurDAO implements IUtilisateurDAO {
         return utilisateurs;
     }
 
-    public java.util.List findByRole(String role) {
-        java.util.List utilisateurs = new java.util.ArrayList();
+    public List<Utilisateur> findByRole(String role) {
+        List<Utilisateur> utilisateurs = new ArrayList<>();
         String sql = "SELECT * FROM utilisateur WHERE role = ?";
         Connection conn = null;
         PreparedStatement pstmt = null;

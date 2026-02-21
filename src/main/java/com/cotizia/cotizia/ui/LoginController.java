@@ -2,7 +2,6 @@ package com.cotizia.cotizia.ui;
 
 import com.cotizia.cotizia.Cotizia;
 import com.cotizia.cotizia.services.AuthenticationService;
-import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;

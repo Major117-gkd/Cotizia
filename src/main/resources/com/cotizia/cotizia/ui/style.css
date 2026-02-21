@@ -196,3 +196,71 @@
     -fx-background-color: #e0f2f1;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 105, 92, 0.1), 5, 0, 0, 2);
 }
+
+/* --- Boîtes de Dialogue Personnalisées (Version Épurée) --- */
+.custom-alert {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 15, 0, 0, 8);
+}
+
+.custom-alert .dialog-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.custom-alert .header-panel {
+    -fx-background-color: #fcfdfd;
+    /* Extremely light teal tint */
+    -fx-padding: 25 30 15 30;
+    -fx-border-color: #f1f5f4;
+    -fx-border-width: 0 0 1 0;
+}
+
+.custom-alert .header-panel .label {
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #004d40;
+}
+
+.custom-alert .content.label {
+    -fx-font-size: 15px;
+    -fx-text-fill: #455a64;
+    -fx-padding: 25 30 25 30;
+    -fx-line-spacing: 6;
+}
+
+.custom-alert .button-bar {
+    -fx-padding: 15 30 25 30;
+    -fx-background-color: white;
+}
+
+.button-danger {
+    -fx-background-color: #ef5350;
+    /* Softer professional red */
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: 600;
+    -fx-padding: 10 24;
+    -fx-cursor: hand;
+}
+
+.button-danger:hover {
+    -fx-background-color: #d32f2f;
+    -fx-effect: dropshadow(three-pass-box, rgba(211, 47, 47, 0.25), 8, 0, 0, 3);
+    -fx-translate-y: -1;
+}
+
+.button-neutral {
+    -fx-background-color: #f5f7f8;
+    -fx-text-fill: #546e7a;
+    -fx-background-radius: 8;
+    -fx-font-weight: 600;
+    -fx-padding: 10 24;
+    -fx-cursor: hand;
+}
+
+.button-neutral:hover {
+    -fx-background-color: #eef1f2;
+    -fx-translate-y: -1;
+}

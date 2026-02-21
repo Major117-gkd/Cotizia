@@ -214,7 +214,7 @@ public class DashboardController {
                 // Load recent activities
                 if (recentActivitiesBox != null) {
                     com.cotizia.cotizia.implementation.MouchardDAO mouchardDAO = new com.cotizia.cotizia.implementation.MouchardDAO();
-                    java.util.List logs = mouchardDAO.getRecentLogs(5);
+                    java.util.List<String> logs = mouchardDAO.getRecentLogs(5);
 
                     recentActivitiesBox.getChildren().clear();
                     Label title = new Label("Activités Récentes");
@@ -227,8 +227,7 @@ public class DashboardController {
                         placeholder.setStyle("-fx-text-fill: #90a4ae;");
                         recentActivitiesBox.getChildren().add(placeholder);
                     } else {
-                        for (Object logObj : logs) {
-                            String log = (String) logObj;
+                        for (String log : logs) {
                             Label logLabel = new Label(log);
                             logLabel.setStyle("-fx-text-fill: #455a64; -fx-padding: 5 0 5 0; -fx-font-size: 13px;");
                             recentActivitiesBox.getChildren().add(logLabel);

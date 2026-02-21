@@ -47,7 +47,7 @@ public class ReportService {
         table.addCell(new PdfPCell(new Phrase("Payé")));
         table.addCell(new PdfPCell(new Phrase("Statut")));
 
-        List<Participant> participants = (List<Participant>) (List<?>) participantDAO.findByCycle(cycle.getId());
+        List<Participant> participants = participantDAO.findByCycle(cycle.getId());
         for (Participant p : participants) {
             table.addCell(p.getUtilisateur().getNom() + " " + p.getUtilisateur().getPrenom());
             table.addCell(String.valueOf(p.getPositionBeneficiaire()));

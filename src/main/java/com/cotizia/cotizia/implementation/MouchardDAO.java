@@ -18,25 +18,25 @@ public class MouchardDAO {
             conn = DBConnection.getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, action);
-            pstmt.setTimestamp(2, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
+            pstmt.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now()));
             pstmt.setInt(3, utilisateurId);
 
             pstmt.executeUpdate();
-        } catch (java.sql.SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (java.sql.SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
 
-    public java.util.List findAll() {
-        java.util.List logs = new java.util.ArrayList();
+    public List<Mouchard> findAll() {
+        List<Mouchard> logs = new ArrayList<>();
         String sql = "SELECT m.*, u.nom, u.prenom FROM mouchard m JOIN utilisateur u ON m.utilisateur_id = u.id ORDER BY date_action DESC";
         Connection conn = null;
         Statement stmt = null;
@@ -57,26 +57,26 @@ public class MouchardDAO {
                 }
                 logs.add(m);
             }
-        } catch (java.sql.SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
                 if (rs != null)
                     rs.close();
-            } catch (java.sql.SQLException e) {
+            } catch (SQLException e) {
             }
             try {
                 if (stmt != null)
                     stmt.close();
-            } catch (java.sql.SQLException e) {
+            } catch (SQLException e) {
             }
         }
         return logs;
     }
 
     // Better implementation with proper mapping
-    public java.util.List findAllLogsWithUserNames() {
-        java.util.List logs = new java.util.ArrayList();
+    public List<String> findAllLogsWithUserNames() {
+        List<String> logs = new ArrayList<>();
         String sql = "SELECT m.action, m.date_action, u.nom, u.prenom FROM mouchard m JOIN utilisateur u ON m.utilisateur_id = u.id ORDER BY date_action DESC";
         Connection conn = null;
         Statement stmt = null;
@@ -92,25 +92,25 @@ public class MouchardDAO {
                         + rs.getString("prenom") + " : " + rs.getString("action");
                 logs.add(entry);
             }
-        } catch (java.sql.SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
                 if (rs != null)
                     rs.close();
-            } catch (java.sql.SQLException e) {
+            } catch (SQLException e) {
             }
             try {
                 if (stmt != null)
                     stmt.close();
-            } catch (java.sql.SQLException e) {
+            } catch (SQLException e) {
             }
         }
         return logs;
     }
 
-    public java.util.List getRecentLogs(int limit) {
-        java.util.List logs = new java.util.ArrayList();
+    public List<String> getRecentLogs(int limit) {
+        List<String> logs = new ArrayList<>();
         String sql = "SELECT m.action, m.date_action, u.nom, u.prenom FROM mouchard m JOIN utilisateur u ON m.utilisateur_id = u.id ORDER BY date_action DESC LIMIT ?";
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -136,18 +136,18 @@ public class MouchardDAO {
                         + rs.getString("prenom") + " : " + rs.getString("action");
                 logs.add(entry);
             }
-        } catch (java.sql.SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
                 if (rs != null)
                     rs.close();
-            } catch (java.sql.SQLException e) {
+            } catch (SQLException e) {
             }
             try {
                 if (pstmt != null)
                     pstmt.close();
-            } catch (java.sql.SQLException e) {
+            } catch (SQLException e) {
             }
         }
         return logs;

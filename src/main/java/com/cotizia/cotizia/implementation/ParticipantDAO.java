@@ -1,9 +1,7 @@
 package com.cotizia.cotizia.implementation;
 
 import com.cotizia.cotizia.interfaces.IParticipantDAO;
-import com.cotizia.cotizia.models.Cycle;
 import com.cotizia.cotizia.models.Participant;
-import com.cotizia.cotizia.models.Utilisateur;
 import com.cotizia.cotizia.utils.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
@@ -78,9 +76,9 @@ public class ParticipantDAO implements IParticipantDAO {
         }
     }
 
-    public java.util.List findByCycle(int cycleId) {
+    public List<Participant> findByCycle(int cycleId) {
         System.out.println("ParticipantDAO: Searching for participants in cycle ID=" + cycleId);
-        java.util.List participants = new java.util.ArrayList();
+        List<Participant> participants = new ArrayList<>();
         String sql = "SELECT * FROM participant WHERE cycle_id = ? ORDER BY position_beneficiaire ASC";
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -197,8 +195,8 @@ public class ParticipantDAO implements IParticipantDAO {
         return p;
     }
 
-    public java.util.List findByUtilisateur(int utilisateurId) {
-        java.util.List participants = new java.util.ArrayList();
+    public List<Participant> findByUtilisateur(int utilisateurId) {
+        List<Participant> participants = new ArrayList<>();
         String sql = "SELECT * FROM participant WHERE utilisateur_id = ?";
         Connection conn = null;
         PreparedStatement pstmt = null;
